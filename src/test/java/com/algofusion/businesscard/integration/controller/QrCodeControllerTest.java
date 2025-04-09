@@ -28,8 +28,6 @@ import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.LoginUserRequest;
 import com.algofusion.businesscard.services.AuthService;
 
-import jakarta.persistence.EntityManager;
-
 @Tag("integration")
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -40,8 +38,6 @@ public class QrCodeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private EntityManager entityManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -70,9 +66,7 @@ public class QrCodeControllerTest {
                 .role(Role.CUSTOMER)
                 .build();
 
-        entityManager.persist(user1);
-        entityManager.flush();
-        entityManager.refresh(user1);
+        userRepository.save(user1);
 
         businessCard1 = BusinessCard.builder()
                 .user(user1)
@@ -84,9 +78,7 @@ public class QrCodeControllerTest {
                 .privacy(PrivacyStatus.PUBLIC)
                 .build();
 
-        entityManager.persist(businessCard1);
-        entityManager.flush();
-        entityManager.refresh(businessCard1);
+        businessCardRepository.save(businessCard1);
 
         takeToken(user1.getUsername(), "user1234");
     }

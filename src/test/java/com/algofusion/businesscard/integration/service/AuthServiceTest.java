@@ -17,8 +17,6 @@ import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.LoginUserRequest;
 import com.algofusion.businesscard.services.AuthService;
 
-import jakarta.persistence.EntityManager;
-
 @Tag("integration")
 @SpringBootTest
 @ActiveProfiles("test")
@@ -26,9 +24,6 @@ import jakarta.persistence.EntityManager;
 public class AuthServiceTest {
     @Autowired
     private AuthService authService;
-
-    @Autowired
-    private EntityManager entityManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -44,9 +39,7 @@ public class AuthServiceTest {
                 .role(Role.CUSTOMER)
                 .build();
 
-        entityManager.persist(user1);
-        entityManager.flush();
-
+        userRepository.save(user1);
     }
 
     @Test

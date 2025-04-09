@@ -10,15 +10,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algofusion.businesscard.enums.Role;
 import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.RegisterUserRequest;
+import com.algofusion.businesscard.responses.RegisterUserResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Tag("integration")
@@ -52,16 +56,31 @@ public class UserControllerTest {
                 .password("user1234")
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.post(endpoint + "signup")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(endpoint + "signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerUserRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(registerUserRequest.getEmail()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(registerUserRequest.getUsername()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value(Role.CUSTOMER.toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updatedAt").isNotEmpty());
+                .andReturn();
+        String jsonResponse = result.getResponse().getContentAsString();
+
+        RegisterUserResponse response = objectMapper.readValue(
+                jsonResponse, new TypeReference<RegisterUserResponse>() {
+                });
+
+        assertNotNull(response);
+        assertNotNull(response.getId());
+        assertEquals(registerUserRequest.getEmail(), response.getEmail());
+        assertEquals(registerUserRequest.getUsername(), response.getUsername());
+        assertEquals(Role.CUSTOMER, response.getRole());
+        assertNotNull(response.getCreatedAt());
+        assertNotNull(response.getUpdatedAt());
+
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(registerUserRequest.getEmail()))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(registerUserRequest.getUsername()))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.role").value(Role.CUSTOMER.toString()))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").isNotEmpty())
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.updatedAt").isNotEmpty());
     }
 
     @AfterEach

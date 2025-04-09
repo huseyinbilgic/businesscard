@@ -90,9 +90,7 @@ public class BusinessCardControllerTest {
                                 .role(Role.CUSTOMER)
                                 .build();
 
-                entityManager.persist(user1);
-                entityManager.flush();
-                entityManager.refresh(user1);
+                userRepository.save(user1);
 
                 businessCard1 = BusinessCard.builder()
                                 .user(user1)
@@ -102,11 +100,10 @@ public class BusinessCardControllerTest {
                                 .jobTitle("Computer Engineer")
                                 .aboutIt("ABOUT")
                                 .privacy(PrivacyStatus.PUBLIC)
+                                .contacts(null)
                                 .build();
 
-                entityManager.persist(businessCard1);
-                entityManager.flush();
-                entityManager.refresh(businessCard1);
+                businessCardRepository.save(businessCard1);
 
                 contact1 = Contact.builder()
                                 .businessCard(businessCard1)
@@ -115,9 +112,8 @@ public class BusinessCardControllerTest {
                                 .contactValue("0555 555 55 55")
                                 .build();
 
-                entityManager.persist(contact1);
-                entityManager.flush();
-                entityManager.refresh(contact1);
+                contactRepository.save(contact1);
+
                 entityManager.refresh(businessCard1);
 
                 takeToken(user1.getUsername(), "user1234");

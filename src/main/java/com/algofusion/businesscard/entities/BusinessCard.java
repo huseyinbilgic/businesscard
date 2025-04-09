@@ -1,6 +1,7 @@
 package com.algofusion.businesscard.entities;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -68,6 +69,7 @@ public class BusinessCard {
     @Column(nullable = false)
     private Instant updatedAt;
 
+    @Builder.Default
     @OneToMany(mappedBy = "businessCard", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Contact> contacts;
+    private List<Contact> contacts = new ArrayList<>();
 }
