@@ -1,0 +1,23 @@
+server:
+  port: 8082
+
+jwt:
+  key: YGoqokLpOIwxAG9BxOm4U5vMMF772ultpoPGX4Y1ub6/+IUPHlj/RzJkaMYgjZOVEPt3YMRvSkcqJ/6o79gpaSWjvEuWxu5p3TIYDm6LTQCpG0LYdVpz5JbKBcW50jQoSgI1xs6C4eNbST4bijVWIIH9MfGJj4U5WVgE6Py6InU=
+  expiration: 120000
+  
+spring:
+  # default profile
+  profiles:
+    active: dev
+    
+  application:
+    name: businesscard
+
+  liquibase:
+    change-log: classpath:/liquibase/master.yml
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/businesscard-db
+    username: algofusion-bc
+    password: algofusion-bc
+    driver-class-name: com.mysql.cj.jdbc.Driver

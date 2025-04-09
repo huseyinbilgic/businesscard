@@ -1,0 +1,12 @@
+services:
+  businesscard-mysql:
+    image: mysql:latest
+    container_name: businesscard-mysql-db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: algofusion-bc
+      MYSQL_DATABASE: businesscard-db
+      MYSQL_USER: algofusion-bc
+      MYSQL_PASSWORD: algofusion-bc
