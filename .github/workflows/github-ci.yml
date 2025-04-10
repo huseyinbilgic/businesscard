@@ -36,7 +36,7 @@ jobs:
         cache: maven
    
     - name: Start MySQL with Docker Compose  
-      run: docker-compose up -d
+      run: docker compose up -d
 
 
     - name: Build and Test with Maven
