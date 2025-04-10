@@ -39,6 +39,9 @@ jobs:
       run: |
           cd src/main/resources/docker/
           docker compose up -d
+      
+      env:
+        MYSQL_CONTAINER_NAME: businesscard-mysql-db
 
     - name: Build and Test with Maven
       run: mvn clean install -DskipTests=false
@@ -48,4 +51,6 @@ jobs:
     #   uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
     
     - name: Stop Docker Compose
-      run: docker compose down
+      run: |
+        docker stop ${MYSQL_CONTAINER_NAME}
+        docker rm ${MYSQL_CONTAINER_NAME}
