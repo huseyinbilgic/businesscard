@@ -33,7 +33,7 @@ jobs:
     - name: Set up Docker Compose
       run: |
           cd src/main/resources/docker/
-          docker-compose up -d
+          docker compose up -d
           --build 'businesscard-mysql'
           echo "Waiting for services to start..."
           sleep 3
