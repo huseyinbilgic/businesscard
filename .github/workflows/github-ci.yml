@@ -54,10 +54,11 @@ jobs:
       # Wait for MySQL to be ready
     - name: Wait for MySQL to be ready
       run: |
-          until docker exec ${MYSQL_CONTAINER_NAME} mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} --host=localhost --port=3306 --silent ping; do
-            echo "Waiting for MySQL to be ready..."
-            sleep 5
-          done
+        until docker exec ${MYSQL_CONTAINER_NAME} mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=localhost --port=3306 -e "SELECT 1"; do
+          echo "Waiting for MySQL to be ready..."
+          sleep 5
+        done
+
 
     - name: Build and Test with Maven
       run: mvn clean install -DskipTests=false
