@@ -61,14 +61,22 @@ jobs:
         echo "MYSQL_PORT=3306" >> $GITHUB_ENV
         echo "MYSQL_VERSION=latest" >> $GITHUB_ENV
     
+
+    - name: Wait for MySQL to be ready
+      run: |
+          until docker exec ${MYSQL_CONTAINER_NAME} mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} --host=localhost --port=3306 --silent ping; do
+            echo "Waiting for MySQL to be ready..."
+            sleep 5
+          done
+
     - name: Build and Test with Maven
       run: mvn clean install -DskipTests=false
 
       # 7. Docker konteynerini kapatma işlemi
-    # - name: Stop MySQL container
-    #   run: |
-    #       docker stop ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
-    #       docker rm ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
+    - name: Stop MySQL container
+      run: |
+          docker stop ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
+          docker rm ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
