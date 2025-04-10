@@ -30,29 +30,25 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-      # 3. runnin docker container (for MySQL)
     - name: Set up MySQL container
       run: |
           docker run -d \
-            --name ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]} \
-            -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} \
-            -e MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} \
-            -e MYSQL_USER=${{ secrets.MYSQL_USER }} \
-            -e MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
-            -p ${GITHUB_ENV["MYSQL_PORT"]}:${GITHUB_ENV["MYSQL_PORT"]} \
-            mysql:${{ secrets.MYSQL_VERSION }}
-
-      # env
-    - name: Set up environment variables
-      run: |
-          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> $GITHUB_ENV
-          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> $GITHUB_ENV
-          echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> $GITHUB_ENV
-          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> $GITHUB_ENV
-          echo "MYSQL_CONTAINER_NAME=${{ secrets.MYSQL_CONTAINER_NAME }}" >> $GITHUB_ENV
-          echo "MYSQL_PORT=3306" >> $GITHUB_ENV
-          echo "MYSQL_VERSION=latest" >> $GITHUB_ENV
-    
+            --name $MYSQL_CONTAINER_NAME \
+            -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD \
+            -e MYSQL_DATABASE=$MYSQL_DATABASE \
+            -e MYSQL_USER=$MYSQL_USER \
+            -e MYSQL_PASSWORD=$MYSQL_PASSWORD \
+            -p $MYSQL_PORT:$MYSQL_PORT \
+            mysql:$MYSQL_VERSION
+      env:
+          MYSQL_CONTAINER_NAME: ${{ secrets.MYSQL_CONTAINER_NAME }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+          MYSQL_VERSION: ${{ secrets.MYSQL_VERSION }}
+          
     - name: Build and Test with Maven
       run: mvn clean install -DskipTests=false
 
