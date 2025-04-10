@@ -60,11 +60,13 @@ jobs:
         echo "MYSQL_CONTAINER_NAME=${{ secrets.MYSQL_CONTAINER_NAME }}" >> $GITHUB_ENV
         echo "MYSQL_PORT=3306" >> $GITHUB_ENV
         echo "MYSQL_VERSION=latest" >> $GITHUB_ENV
-    
+    - name: Check if MySQL container is running
+      run: |
+          docker ps -a
 
     - name: Wait for MySQL to be ready
       run: |
-          until docker exec ${MYSQL_CONTAINER_NAME} mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=localhost --port=3306 --silent -e "SELECT 1"; do
+          until docker exec businesscard-mysql-db mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=localhost --port=3306 --silent -e "SELECT 1"; do
             echo "Waiting for MySQL to be ready..."
             sleep 5
           done
