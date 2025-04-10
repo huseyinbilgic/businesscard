@@ -51,7 +51,7 @@ public class AuthControllerTest {
     public void beforeEach() {
         user1 = User.builder()
                 .email("usermail@gmail.com")
-                .username("Username 1")
+                .username("Username1")
                 .password(passwordEncoder.encode("user1234"))
                 .role(Role.CUSTOMER)
                 .build();
@@ -60,7 +60,7 @@ public class AuthControllerTest {
 
     @Test
     void testLogin() throws Exception {
-        LoginUserRequest loginUserRequest = LoginUserRequest.builder().usernameOrEmail("Username 1")
+        LoginUserRequest loginUserRequest = LoginUserRequest.builder().usernameOrEmail("Username1")
                 .password("user1234").build();
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(endpoint + "login")

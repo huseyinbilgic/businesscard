@@ -61,7 +61,7 @@ public class QrCodeControllerTest {
     public void beforeEach() throws InterruptedException {
         user1 = User.builder()
                 .email("usermail@gmail.com")
-                .username("Username 1")
+                .username("Username1")
                 .password(passwordEncoder.encode("user1234"))
                 .role(Role.CUSTOMER)
                 .build();

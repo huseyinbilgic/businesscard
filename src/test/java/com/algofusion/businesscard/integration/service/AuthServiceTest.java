@@ -34,7 +34,7 @@ public class AuthServiceTest {
     public void beforeEach() {
         user1 = User.builder()
                 .email("usermail@gmail.com")
-                .username("Username 1")
+                .username("Username1")
                 .password("$2a$12$/NGOUpCcOmg1mCCyVfjvi.66ew/YLcHRpA7Wq/N8pO92RanPrs/T2") // user1234
                 .role(Role.CUSTOMER)
                 .build();
@@ -44,7 +44,7 @@ public class AuthServiceTest {
 
     @Test
     void testLogin_WithValidParameters_ShouldBeLogin() {
-        LoginUserRequest loginUserRequest = LoginUserRequest.builder().usernameOrEmail("Username 1")
+        LoginUserRequest loginUserRequest = LoginUserRequest.builder().usernameOrEmail("Username1")
                 .password("user1234").build();
         String login = authService.login(loginUserRequest);
 

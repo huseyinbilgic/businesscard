@@ -37,7 +37,7 @@ public class UserServiceTest {
     void registerUser_WithValidRequest_ShouldBeCreated() {
         RegisterUserRequest registerUserRequest = RegisterUserRequest.builder()
                 .email("usermail@gmail.com")
-                .username("Username 1")
+                .username("Username1")
                 .password("user1234")
                 .build();
 

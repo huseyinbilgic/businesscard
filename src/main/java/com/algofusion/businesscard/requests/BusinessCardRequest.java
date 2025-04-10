@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.algofusion.businesscard.enums.PrivacyStatus;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -35,6 +36,7 @@ public class BusinessCardRequest {
     @NotNull(message = "Privacy cannot be null.")
     private PrivacyStatus privacy;
 
+    @Valid
     @NotNull(message = "Contacts cannot be null.")
     private List<ContactRequest> contactsRequests;
 }
