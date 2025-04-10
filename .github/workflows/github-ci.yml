@@ -42,7 +42,7 @@ jobs:
           -p $MYSQL_PORT:$MYSQL_PORT \
           mysql:$MYSQL_VERSION
       env:
-        MYSQL_CONTAINER_NAME: ${{ secrets.MYSQL_CONTAINER_NAME }}
+        MYSQL_CONTAINER_NAME: businesscard-mysql-db
         MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         MYSQL_USER: ${{ secrets.MYSQL_USER }}
