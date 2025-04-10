@@ -65,10 +65,10 @@ jobs:
       run: mvn clean install -DskipTests=false
 
       # 7. Docker konteynerini kapatma işlemi
-    - name: Stop MySQL container
-      run: |
-          docker stop ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
-          docker rm ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
+    # - name: Stop MySQL container
+    #   run: |
+    #       docker stop ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
+    #       docker rm ${GITHUB_ENV["MYSQL_CONTAINER_NAME"]}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
