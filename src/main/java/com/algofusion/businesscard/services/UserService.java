@@ -24,10 +24,10 @@ public class UserService {
     private final UserMapper userMapper;
 
     public RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest) {
-        if (userRepository.findByEmail(registerUserRequest.getEmail()).isPresent()) {
+        if (userRepository.existsByEmail(registerUserRequest.getEmail())) {
             throw new CustomException("Email already exists!");
         }
-        if (userRepository.findByUsername(registerUserRequest.getUsername()).isPresent()) {
+        if (userRepository.existsByUsername(registerUserRequest.getUsername())) {
             throw new CustomException("Username already exists!");
         }
 
@@ -37,5 +37,10 @@ public class UserService {
         userRepository.save(user);
 
         return userMapper.toUserResponse(user);
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException("User not found: " + username));
     }
 }

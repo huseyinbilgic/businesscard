@@ -31,5 +31,6 @@ public class RegisterUserRequest {
 
     @NotNull(message = "Password cannot be null.")
     @NotBlank(message = "Password cannot be blank")
+    @Pattern(regexp = "\\S+", message = "Password cannot contain spaces!")
     private String password;
 }

@@ -12,7 +12,6 @@ import com.algofusion.businesscard.errors.CustomException;
 import com.algofusion.businesscard.helper.PermissionHelper;
 import com.algofusion.businesscard.mappers.BusinessCardMapper;
 import com.algofusion.businesscard.repositories.BusinessCardRepository;
-import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.BusinessCardRequest;
 import com.algofusion.businesscard.responses.BusinessCardResponse;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -25,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class BusinessCardService {
     private final BusinessCardRepository businessCardRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final BusinessCardMapper businessCardMapper;
     private final ObjectMapper objectMapper;
     private final ContactService contactService;
@@ -34,13 +33,13 @@ public class BusinessCardService {
     public List<BusinessCardResponse> fetchAllBusinesCardsByUsername(String username) {
         return businessCardRepository.findAllByUserUsername(username)
                 .stream()
-                .map((businessCard) -> businessCardMapper.toBusinessCardResponse(businessCard))
+                .map(businessCardMapper::toBusinessCardResponse)
                 .toList();
     }
 
     public BusinessCardResponse saveNewBusinessCardByUsername(String username,
             BusinessCardRequest businessCardRequest) {
-        User byUsername = userRepository.findByUsername(username).get();
+        User byUsername = userService.findByUsername(username);
 
         BusinessCard businessCard = businessCardMapper.toBusinessCard(businessCardRequest);
         businessCard.setUser(byUsername);
@@ -53,14 +52,14 @@ public class BusinessCardService {
     public BusinessCardResponse updateBusinessCard(String username, Long businessCardId,
             BusinessCardRequest businessCardRequest) {
         BusinessCard byId = fetchBusinessCardById(businessCardId);
-        
+
         permissionHelper.checkUsername(byId.getUser().getUsername(), username);
         try {
             objectMapper.updateValue(byId, businessCardRequest);
             contactService.updateContacts(byId, businessCardRequest.getContactsRequests());
             businessCardRepository.save(byId);
         } catch (JsonMappingException e) {
-            e.printStackTrace();
+            throw new CustomException("Failed to map BusinessCardRequest to BusinessCard" + e);
         }
 
         return businessCardMapper.toBusinessCardResponse(byId);

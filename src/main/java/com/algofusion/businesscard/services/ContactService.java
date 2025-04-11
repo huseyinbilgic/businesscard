@@ -49,7 +49,7 @@ public class ContactService {
         try {
             objectMapper.updateValue(contact, contactR);
         } catch (JsonMappingException e) {
-            throw new CustomException("Error updating contact: " + contactR.getId());
+            throw new CustomException("Error updating contact: " + e + contactR.getId());
         }
     }
 }
