@@ -21,3 +21,11 @@ spring:
     username: algofusion-bc
     password: algofusion-bc
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: algofusion-bc-redis
+      ssl:
+        enabled: true

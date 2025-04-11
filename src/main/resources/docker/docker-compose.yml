@@ -10,3 +10,17 @@ services:
       MYSQL_DATABASE: businesscard-db
       MYSQL_USER: algofusion-bc
       MYSQL_PASSWORD: algofusion-bc
+
+
+  redis:
+    image: redis:latest
+    container_name: businesscard_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
+    restart: always
+
+networks:
+  my_network:
+    driver: bridge
