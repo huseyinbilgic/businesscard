@@ -59,7 +59,7 @@ public class UserControllerTest {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(endpoint + "signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerUserRequest)))
-                //.andExpect(status().isCreated())
+                .andExpect(status().isCreated())
                 .andReturn();
         String jsonResponse = result.getResponse().getContentAsString();
 

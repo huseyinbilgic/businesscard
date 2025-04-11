@@ -24,6 +24,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      MYSQL_CONTAINER_NAME: businesscard-mysql-db
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -49,5 +52,5 @@ jobs:
     
     - name: Stop Docker Compose
       run: |
-        docker stop businesscard-mysql-db
-        docker rm businesscard-mysql-db
+        docker stop ${MYSQL_CONTAINER_NAME}
+        docker rm ${MYSQL_CONTAINER_NAME}
