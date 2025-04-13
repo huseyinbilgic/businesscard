@@ -1,5 +1,6 @@
 package com.algofusion.businesscard.responses;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
@@ -16,7 +17,9 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessCardResponse {
+public class BusinessCardResponse  implements Serializable{
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private Long userId;
     private String bcCode;

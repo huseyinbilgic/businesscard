@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final RedisTokenService redisTokenService;
     private final CustomUserDetailsService userDetailsService;
 
     @Override
@@ -41,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (!jwtUtil.validateToken(token, userDetails)) {
+                if (!redisTokenService.isTokenValid(token)) {
                     throw new SecurityException("Invalid or expired JWT token");
                 }
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,

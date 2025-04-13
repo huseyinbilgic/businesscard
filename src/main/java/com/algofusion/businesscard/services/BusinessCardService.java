@@ -3,6 +3,8 @@ package com.algofusion.businesscard.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ public class BusinessCardService {
     private final ContactService contactService;
     private final PermissionHelper permissionHelper;
 
+    @Cacheable(value = "businessCards", key = "#username")
     public List<BusinessCardResponse> fetchAllBusinesCardsByUsername(String username) {
         return businessCardRepository.findAllByUserUsername(username)
                 .stream()
@@ -37,6 +40,7 @@ public class BusinessCardService {
                 .toList();
     }
 
+    @CacheEvict(value = "businessCards", key = "#username")
     public BusinessCardResponse saveNewBusinessCardByUsername(String username,
             BusinessCardRequest businessCardRequest) {
         User byUsername = userService.findByUsername(username);
@@ -49,6 +53,7 @@ public class BusinessCardService {
         return businessCardMapper.toBusinessCardResponse(businessCard);
     }
 
+    @CacheEvict(value = "businessCards", key = "#username")
     public BusinessCardResponse updateBusinessCard(String username, Long businessCardId,
             BusinessCardRequest businessCardRequest) {
         BusinessCard byId = fetchBusinessCardById(businessCardId);
@@ -65,6 +70,7 @@ public class BusinessCardService {
         return businessCardMapper.toBusinessCardResponse(byId);
     }
 
+    @CacheEvict(value = "businessCards", key = "#username")
     public String deleteBusinessCardById(String username, Long id) {
         BusinessCard byId = fetchBusinessCardById(id);
 

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -22,5 +23,11 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginUserRequest loginUserRequest) {
         return ResponseEntity.ok(authService.login(loginUserRequest));
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader){
+        authService.logout(authorizationHeader.substring(7));
+        return ResponseEntity.ok("Log out completed now");
     }
 }

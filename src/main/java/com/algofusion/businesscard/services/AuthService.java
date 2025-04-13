@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.algofusion.businesscard.requests.LoginUserRequest;
 import com.algofusion.businesscard.services.security.JwtUtil;
+import com.algofusion.businesscard.services.security.RedisTokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,12 +18,19 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final RedisTokenService redisTokenService;
 
     public String login(LoginUserRequest loginUserRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginUserRequest.getUsernameOrEmail(),
                         loginUserRequest.getPassword()));
-        return jwtUtil.generateTokenForUserName(Map.of(), loginUserRequest.getUsernameOrEmail());
+        String token = jwtUtil.generateTokenForUserName(Map.of(), loginUserRequest.getUsernameOrEmail());
+        redisTokenService.storeToken(loginUserRequest.getUsernameOrEmail(), token);
+        return token;
     }
-    
+
+    public void logout(String token){
+        redisTokenService.deleteToken(token);
+    }
+
 }
