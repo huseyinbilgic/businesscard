@@ -6,10 +6,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: algofusion-bc
+      MYSQL_ROOT_PASSWORD: algofusion-bc_mysql_rp*
       MYSQL_DATABASE: businesscard-db
       MYSQL_USER: algofusion-bc
-      MYSQL_PASSWORD: algofusion-bc
+      MYSQL_PASSWORD: algofusion-bc_mysql*
 
 
   businesscard-redis:

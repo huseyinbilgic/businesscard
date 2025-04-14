@@ -19,7 +19,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/businesscard-db
     username: algofusion-bc
-    password: algofusion-bc
+    password: algofusion-bc_mysql*
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
