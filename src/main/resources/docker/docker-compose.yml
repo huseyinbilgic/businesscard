@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: algofusion-bc
 
 
-  redis:
+  businesscard-redis:
     image: redis:latest
     container_name: businesscard_redis
     ports:
