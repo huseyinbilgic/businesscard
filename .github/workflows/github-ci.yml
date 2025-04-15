@@ -26,6 +26,7 @@ jobs:
 
     env:
       MYSQL_CONTAINER_NAME: businesscard-mysql-db
+      JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 
     steps:
     - name: Checkout code

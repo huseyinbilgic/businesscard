@@ -1,9 +1,13 @@
 server:
   port: 8082
 
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD}
+    
 jwt:
-  key: YGoqokLpOIwxAG9BxOm4U5vMMF772ultpoPGX4Y1ub6/+IUPHlj/RzJkaMYgjZOVEPt3YMRvSkcqJ/6o79gpaSWjvEuWxu5p3TIYDm6LTQCpG0LYdVpz5JbKBcW50jQoSgI1xs6C4eNbST4bijVWIIH9MfGJj4U5WVgE6Py6InU=
-  expiration: 120000
+  key: ENC(uCdWdUO98T+K09Z1fKH2DUT5WaRdkJh5P/En/qyelZAOpYcw1GFFhx56Tkt/JoOVl7ze6XIHQKN6G5QWUvk9QPyyhNE9tQQpPDEiweFGptEraFDukChMSr6N4rnnHbFFpXmqW5Hm4WIXLihrbxqASA==)
+  expiration: 600000
   
 spring:
   # default profile
