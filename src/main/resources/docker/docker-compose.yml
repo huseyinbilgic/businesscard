@@ -1,4 +1,19 @@
 services:
+
+  springboot-app:
+    build: .
+    ports:
+      - "8082:8082"
+    container_name: springboot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://businesscard-mysql:3306/businesscard-db
+      SPRING_DATASOURCE_USERNAME: algofusion-bc
+      SPRING_DATASOURCE_PASSWORD: algofusion-bc_mysql*
+    depends_on:
+      - businesscard-mysql
+    networks:
+    - my_network
+
   businesscard-mysql:
     image: mysql:latest
     container_name: businesscard-mysql-db

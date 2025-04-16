@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      MYSQL_CONTAINER_NAME: businesscard-mysql-db
       JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 
     steps:
@@ -42,7 +41,12 @@ jobs:
     - name: Start MySQL with Docker Compose
       run: |
           cd src/main/resources/docker/
-          docker compose up -d
+          docker compose up -d businesscard-mysql
+
+    - name: Start Redis with Docker Compose
+      run: |
+          cd src/main/resources/docker/
+          docker compose up -d businesscard-redis
 
     - name: Build and Test with Maven
       run: mvn clean install -DskipTests=false
@@ -53,5 +57,5 @@ jobs:
     
     - name: Stop Docker Compose
       run: |
-        docker stop ${MYSQL_CONTAINER_NAME}
-        docker rm ${MYSQL_CONTAINER_NAME}
+        docker stop $(docker ps -a -q)
+        docker rm $(docker ps -a -q)
