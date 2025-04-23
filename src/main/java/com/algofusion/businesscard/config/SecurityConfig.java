@@ -26,41 +26,50 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtRequestFilter jwtRequestFilter;
-    private final CustomUserDetailsService userDetailsService;
-    
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/signup").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider());
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exceptions) -> exceptions
-                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-        return http.build();
-    }
+        private final JwtRequestFilter jwtRequestFilter;
+        private final CustomUserDetailsService userDetailsService;
+        private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
+        private final CustomOAuth2UserService customOAuth2UserService;
+        private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http.csrf(AbstractHttpConfigurer::disable)
+                                .oauth2Login(oauth2 -> oauth2
+                                                .userInfoEndpoint(userInfo -> userInfo
+                                                                .userService(customOAuth2UserService))
+                                                .successHandler(customOAuth2LoginSuccessHandler)
+                                                .failureHandler(customOAuth2FailureHandler))
+                                .authorizeHttpRequests((authz) -> authz
+                                                .requestMatchers("/api/auth/**").permitAll()
+                                                .requestMatchers("/api/user/signup").permitAll()
+                                                .requestMatchers("/login/**", "/oauth2/**").permitAll()
+                                                .anyRequest().authenticated())
+                                .sessionManagement((session) -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authenticationProvider());
+                http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                                .exceptionHandling((exceptions) -> exceptions
+                                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+                return http.build();
+        }
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+        @Bean
+        PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
+        @Bean
+        AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
+
+        @Bean
+        AuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+                provider.setUserDetailsService(userDetailsService);
+                provider.setPasswordEncoder(passwordEncoder());
+                return provider;
+        }
 }

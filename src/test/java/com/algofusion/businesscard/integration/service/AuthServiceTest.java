@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ public class AuthServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     User user1;
 
     @BeforeEach
@@ -35,7 +39,7 @@ public class AuthServiceTest {
         user1 = User.builder()
                 .email("usermail@gmail.com")
                 .username("Username1")
-                .password("$2a$12$/NGOUpCcOmg1mCCyVfjvi.66ew/YLcHRpA7Wq/N8pO92RanPrs/T2") // user1234
+                .password(passwordEncoder.encode("user1234"))
                 .role(Role.CUSTOMER)
                 .build();
 

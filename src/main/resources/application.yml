@@ -33,3 +33,32 @@ spring:
       password: algofusion-bc-redis
       ssl:
         enabled: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 962806171238-daotkglq7pju8nlandrghh6iod4ed2ih.apps.googleusercontent.com
+            client-secret: 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
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Google
+          # facebook:
+          #   client-id: YOUR_FACEBOOK_CLIENT_ID
+          #   client-secret: YOUR_FACEBOOK_CLIENT_SECRET
+          #   scope: public_profile, email
+          #   redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+          #   authorization-grant-type: authorization_code
+          #   client-name: Facebook
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+          # facebook:
+          #   authorization-uri: https://www.facebook.com/v10.0/dialog/oauth
+          #   token-uri: https://graph.facebook.com/v10.0/oauth/access_token
+          #   user-info-uri: https://graph.facebook.com/me?fields=id,name,email,picture
+
