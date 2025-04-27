@@ -29,15 +29,12 @@ public class SecurityConfig {
         private final JwtRequestFilter jwtRequestFilter;
         private final CustomUserDetailsService userDetailsService;
         private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
-        private final CustomOAuth2UserService customOAuth2UserService;
         private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
 
         @Bean
         SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.csrf(AbstractHttpConfigurer::disable)
                                 .oauth2Login(oauth2 -> oauth2
-                                                .userInfoEndpoint(userInfo -> userInfo
-                                                                .userService(customOAuth2UserService))
                                                 .successHandler(customOAuth2LoginSuccessHandler)
                                                 .failureHandler(customOAuth2FailureHandler))
                                 .authorizeHttpRequests((authz) -> authz

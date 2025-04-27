@@ -17,7 +17,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessCardResponse  implements Serializable{
+public class BusinessCardResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;

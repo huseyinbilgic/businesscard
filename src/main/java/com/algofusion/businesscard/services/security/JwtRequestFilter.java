@@ -32,6 +32,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
+        
+        String redirectUri = request.getParameter("redirectUri");
+        if (redirectUri != null) {
+            request.getSession().setAttribute("redirectUri", redirectUri);
+        }
 
         String token = null;
         String username = null;
