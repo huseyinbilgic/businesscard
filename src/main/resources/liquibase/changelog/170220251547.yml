@@ -28,6 +28,17 @@ databaseChangeLog:
                   name: password
                   type: varchar(255)
               - column:
+                  name: refresh_token
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: refresh_token_expires_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
                   name: created_at
                   type: timestamp
                   defaultValueComputed: CURRENT_TIMESTAMP

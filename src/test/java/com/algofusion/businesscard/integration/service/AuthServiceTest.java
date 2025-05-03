@@ -2,6 +2,9 @@ package com.algofusion.businesscard.integration.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -17,6 +20,7 @@ import com.algofusion.businesscard.enums.Role;
 import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.LoginUserRequest;
 import com.algofusion.businesscard.services.AuthService;
+import com.algofusion.businesscard.services.security.JwtUtil;
 
 @Tag("integration")
 @SpringBootTest
@@ -32,6 +36,9 @@ public class AuthServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     User user1;
 
     @BeforeEach
@@ -41,6 +48,8 @@ public class AuthServiceTest {
                 .username("Username1")
                 .password(passwordEncoder.encode("user1234"))
                 .role(Role.CUSTOMER)
+                .refreshToken(jwtUtil.generateRefreshToken())
+                .refreshTokenExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
                 .build();
 
         userRepository.save(user1);
@@ -50,7 +59,7 @@ public class AuthServiceTest {
     void testLogin_WithValidParameters_ShouldBeLogin() {
         LoginUserRequest loginUserRequest = LoginUserRequest.builder().usernameOrEmail("Username1")
                 .password("user1234").build();
-        String login = authService.login(loginUserRequest);
+        String login = authService.login(loginUserRequest).getJwtToken();
 
         assertNotNull(login);
     }

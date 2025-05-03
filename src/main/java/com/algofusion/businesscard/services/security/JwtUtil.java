@@ -1,5 +1,8 @@
 package com.algofusion.businesscard.services.security;
 
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -10,18 +13,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.algofusion.businesscard.entities.User;
+import com.algofusion.businesscard.errors.CustomException;
+import com.algofusion.businesscard.repositories.UserRepository;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class JwtUtil {
     @Value("${jwt.key}")
     private String SECRET;
 
     @Value("${jwt.expiration}")
     long expiration;
+
+    private final UserRepository userRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -74,5 +85,30 @@ public class JwtUtil {
     private SecretKey getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String generateRefreshToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] tokenBytes = new byte[64];
+        secureRandom.nextBytes(tokenBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+    }
+
+    public boolean validateRefreshTokenWithDate(Instant expiresAt) {
+        if (expiresAt.isBefore(Instant.now())) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateRefreshTokenWithRefreshToken(String refreshToken) {
+        User user = extractUsernameFromRefreshToken(refreshToken);
+
+        return validateRefreshTokenWithDate(user.getRefreshTokenExpiresAt());
+    }
+
+    public User extractUsernameFromRefreshToken(String refreshToken) {
+        return userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new CustomException("User by refresh token not found: " + refreshToken));
     }
 }

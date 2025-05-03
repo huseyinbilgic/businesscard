@@ -1,8 +1,11 @@
 package com.algofusion.businesscard.config;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -29,6 +32,9 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
     private final RedisTokenService redisTokenService;
     private final UserRepository userRepository;
 
+    @Value("${refresh-token.expiration}")
+    long expiration;
+
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request,
@@ -48,6 +54,8 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
                     .email(email)
                     .username(email)
                     .role(Role.CUSTOMER)
+                    .refreshToken(jwtUtil.generateRefreshToken())
+                    .refreshTokenExpiresAt(Instant.now().plus(expiration, ChronoUnit.DAYS))
                     .build());
         }
 

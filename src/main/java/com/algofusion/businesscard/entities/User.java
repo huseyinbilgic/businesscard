@@ -46,6 +46,12 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false, unique = true)
+    private String refreshToken;
+
+    @Column(nullable = false)
+    private Instant refreshTokenExpiresAt;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;

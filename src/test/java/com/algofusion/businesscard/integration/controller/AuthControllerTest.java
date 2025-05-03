@@ -3,6 +3,9 @@ package com.algofusion.businesscard.integration.controller;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -22,6 +25,7 @@ import com.algofusion.businesscard.entities.User;
 import com.algofusion.businesscard.enums.Role;
 import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.LoginUserRequest;
+import com.algofusion.businesscard.services.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Tag("integration")
@@ -43,6 +47,9 @@ public class AuthControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     User user1;
 
     String endpoint = "/api/auth/";
@@ -54,6 +61,8 @@ public class AuthControllerTest {
                 .username("Username1")
                 .password(passwordEncoder.encode("user1234"))
                 .role(Role.CUSTOMER)
+                .refreshToken(jwtUtil.generateRefreshToken())
+                .refreshTokenExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
                 .build();
         userRepository.save(user1);
     }

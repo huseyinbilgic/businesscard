@@ -2,6 +2,8 @@ package com.algofusion.businesscard.integration.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +29,7 @@ import com.algofusion.businesscard.repositories.BusinessCardRepository;
 import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.LoginUserRequest;
 import com.algofusion.businesscard.services.AuthService;
+import com.algofusion.businesscard.services.security.JwtUtil;
 
 @Tag("integration")
 @AutoConfigureMockMvc
@@ -37,7 +40,6 @@ public class QrCodeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -50,6 +52,9 @@ public class QrCodeControllerTest {
 
     @Autowired
     private BusinessCardRepository businessCardRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     User user1;
     BusinessCard businessCard1;
@@ -64,6 +69,8 @@ public class QrCodeControllerTest {
                 .username("Username1")
                 .password(passwordEncoder.encode("user1234"))
                 .role(Role.CUSTOMER)
+                .refreshToken(jwtUtil.generateRefreshToken())
+                .refreshTokenExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
                 .build();
 
         userRepository.save(user1);
@@ -101,7 +108,7 @@ public class QrCodeControllerTest {
                 .password(password)
                 .build();
 
-        token = authService.login(loginUserRequest);
+        token = authService.login(loginUserRequest).getJwtToken();
     }
 
     @AfterEach

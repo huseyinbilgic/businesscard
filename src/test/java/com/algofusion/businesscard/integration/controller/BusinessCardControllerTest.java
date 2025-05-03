@@ -3,6 +3,8 @@ package com.algofusion.businesscard.integration.controller;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +40,7 @@ import com.algofusion.businesscard.requests.LoginUserRequest;
 import com.algofusion.businesscard.responses.BusinessCardResponse;
 import com.algofusion.businesscard.responses.ContactResponse;
 import com.algofusion.businesscard.services.AuthService;
+import com.algofusion.businesscard.services.security.JwtUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,6 +76,9 @@ public class BusinessCardControllerTest {
         @Autowired
         private PasswordEncoder passwordEncoder;
 
+        @Autowired
+        private JwtUtil jwtUtil;
+
         User user1;
         BusinessCard businessCard1;
         Contact contact1;
@@ -88,6 +94,8 @@ public class BusinessCardControllerTest {
                                 .username("Username1")
                                 .password(passwordEncoder.encode("user1234"))
                                 .role(Role.CUSTOMER)
+                                .refreshToken(jwtUtil.generateRefreshToken())
+                                .refreshTokenExpiresAt(Instant.now().plus(7,ChronoUnit.DAYS))
                                 .build();
 
                 userRepository.save(user1);
@@ -327,7 +335,7 @@ public class BusinessCardControllerTest {
                                 .password(password)
                                 .build();
 
-                token = authService.login(loginUserRequest);
+                token = authService.login(loginUserRequest).getJwtToken();
         }
 
         @AfterEach

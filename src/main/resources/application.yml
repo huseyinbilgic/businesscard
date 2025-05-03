@@ -7,7 +7,10 @@ jasypt:
     
 jwt:
   key: ENC(uCdWdUO98T+K09Z1fKH2DUT5WaRdkJh5P/En/qyelZAOpYcw1GFFhx56Tkt/JoOVl7ze6XIHQKN6G5QWUvk9QPyyhNE9tQQpPDEiweFGptEraFDukChMSr6N4rnnHbFFpXmqW5Hm4WIXLihrbxqASA==)
-  expiration: 600000
+  expiration: 604800000 # 7 days
+
+refresh-token:
+  expiration: 30 # 30 days
   
 spring:
   # default profile
