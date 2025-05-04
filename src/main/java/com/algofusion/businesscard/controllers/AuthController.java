@@ -16,7 +16,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,24 +39,37 @@ public class AuthController {
             HttpServletResponse response) {
         JwtTokenResponse login = authService.login(loginUserRequest);
 
-        Cookie refreshCookie = new Cookie("refreshToken", login.getRefreshToken());
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(false);
-        refreshCookie.setPath("/");
-        refreshCookie.setMaxAge((int) (expiration * 24 * 60 * 60));
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", login.getRefreshToken())
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(expiration * 24 * 60 * 60)
+                .sameSite("None")
+                .build();
 
-        response.addCookie(refreshCookie);
+        response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         return ResponseEntity.ok(login.getJwtToken());
     }
 
     @PostMapping("logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader,
+            HttpServletResponse response) {
         authService.logout(authorizationHeader.substring(7));
+
+        ResponseCookie deleteRefreshTokenCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie.toString());
         return ResponseEntity.ok("Log out completed now");
     }
 
     @PostMapping("refresh")
-    public ResponseEntity<String> postMethodName(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
 
         String refreshToken = null;
