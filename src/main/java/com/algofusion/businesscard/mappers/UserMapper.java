@@ -14,7 +14,6 @@ public interface UserMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "password", ignore = true)
     @Mapping(target = "refreshToken", ignore = true)
     @Mapping(target = "refreshTokenExpiresAt", ignore = true)
     User toUser(RegisterUserRequest registerUserRequest);

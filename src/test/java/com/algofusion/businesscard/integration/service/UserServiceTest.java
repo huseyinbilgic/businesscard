@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ public class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void beforeEach() {
 
@@ -38,10 +42,10 @@ public class UserServiceTest {
         RegisterUserRequest registerUserRequest = RegisterUserRequest.builder()
                 .email("usermail@gmail.com")
                 .username("Username1")
-                .password("user1234")
+                .password(passwordEncoder.encode("user1234"))
                 .build();
 
-        RegisterUserResponse registerUser = userService.registerUser(registerUserRequest);
+        RegisterUserResponse registerUser = userService.saveUser(registerUserRequest);
 
         assertNotNull(registerUser);
         assertNotNull(registerUser.getId());

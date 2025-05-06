@@ -1,5 +1,6 @@
 package com.algofusion.businesscard.integration.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +26,7 @@ import com.algofusion.businesscard.entities.User;
 import com.algofusion.businesscard.enums.Role;
 import com.algofusion.businesscard.repositories.UserRepository;
 import com.algofusion.businesscard.requests.LoginUserRequest;
+import com.algofusion.businesscard.requests.RegisterUserRequest;
 import com.algofusion.businesscard.services.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -65,6 +67,34 @@ public class AuthControllerTest {
                 .refreshTokenExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
                 .build();
         userRepository.save(user1);
+    }
+
+
+    @Test
+    void registerUser_WithValidRequest_ShouldReturnCreated() throws Exception {
+        RegisterUserRequest registerUserRequest = RegisterUserRequest.builder()
+                .email("usermail2@gmail.com")
+                .username("Username2")
+                .password("user1234")
+                .build();
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(endpoint + "signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerUserRequest)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String response = result.getResponse().getContentAsString();
+
+        assertNotNull(response);
+        assertEquals("Registration successful", response);
+
+
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(registerUserRequest.getEmail()))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(registerUserRequest.getUsername()))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.role").value(Role.CUSTOMER.toString()))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").isNotEmpty())
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.updatedAt").isNotEmpty());
     }
 
     @Test

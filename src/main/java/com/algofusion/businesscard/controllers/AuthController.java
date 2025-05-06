@@ -4,7 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algofusion.businesscard.entities.User;
+import com.algofusion.businesscard.helper.CookieHelper;
 import com.algofusion.businesscard.requests.LoginUserRequest;
+import com.algofusion.businesscard.requests.RegisterUserRequest;
 import com.algofusion.businesscard.responses.JwtTokenResponse;
 import com.algofusion.businesscard.services.AuthService;
 import com.algofusion.businesscard.services.security.JwtUtil;
@@ -34,18 +36,19 @@ public class AuthController {
     @Value("${refresh-token.expiration}")
     long expiration;
 
+    @PostMapping("signup")
+    public ResponseEntity<String> registerUser(
+            @Valid @RequestBody RegisterUserRequest registerUserRequest) {
+        authService.signup(registerUserRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
+    }
+
     @PostMapping("login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginUserRequest loginUserRequest,
             HttpServletResponse response) {
         JwtTokenResponse login = authService.login(loginUserRequest);
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", login.getRefreshToken())
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(expiration * 24 * 60 * 60)
-                .sameSite("None")
-                .build();
+        ResponseCookie refreshCookie = CookieHelper.generateCookie("refreshToken", login.getRefreshToken(), expiration);
 
         response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         return ResponseEntity.ok(login.getJwtToken());
@@ -56,15 +59,9 @@ public class AuthController {
             HttpServletResponse response) {
         authService.logout(authorizationHeader.substring(7));
 
-        ResponseCookie deleteRefreshTokenCookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(0)
-                .sameSite("Strict")
-                .build();
+        ResponseCookie refreshCookie = CookieHelper.generateCookie("refreshToken", "", 0);
 
-        response.setHeader(HttpHeaders.SET_COOKIE, deleteRefreshTokenCookie.toString());
+        response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         return ResponseEntity.ok("Log out completed now");
     }
 
@@ -93,7 +90,7 @@ public class AuthController {
         }
 
         String token = authService.generateTokenForUsername(userFromRefreshToken.getUsername());
-        ;
+
         return ResponseEntity.ok(token);
     }
 

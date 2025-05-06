@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
@@ -36,7 +34,7 @@ public class UserService {
     @Value("${refresh-token.expiration}")
     long expiration;
 
-    public RegisterUserResponse registerUser(RegisterUserRequest registerUserRequest) {
+    public RegisterUserResponse saveUser(RegisterUserRequest registerUserRequest) {
         if (userRepository.existsByEmail(registerUserRequest.getEmail())) {
             throw new CustomException("Email already exists!");
         }
@@ -45,7 +43,6 @@ public class UserService {
         }
 
         User user = userMapper.toUser(registerUserRequest);
-        user.setPassword(passwordEncoder.encode(registerUserRequest.getPassword()));
         user.setRole(Role.CUSTOMER);
         user.setRefreshToken(jwtUtil.generateRefreshToken());
         user.setRefreshTokenExpiresAt(Instant.now().plus(expiration, ChronoUnit.DAYS));

@@ -7,9 +7,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.algofusion.businesscard.errors.CustomException;
 import com.algofusion.businesscard.requests.LoginUserRequest;
+import com.algofusion.businesscard.requests.RegisterUserRequest;
 import com.algofusion.businesscard.requests.UserUpdateForRefreshTokenRequest;
 import com.algofusion.businesscard.responses.JwtTokenResponse;
 import com.algofusion.businesscard.services.security.JwtUtil;
@@ -25,9 +28,15 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final RedisTokenService redisTokenService;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${refresh-token.expiration}")
     long expiration;
+
+    public void signup(RegisterUserRequest registerUserRequest) {
+        registerUserRequest.setPassword(passwordEncoder.encode(registerUserRequest.getPassword()));
+        userService.saveUser(registerUserRequest);
+    }
 
     public JwtTokenResponse login(LoginUserRequest loginUserRequest) {
         authenticationManager.authenticate(
@@ -51,6 +60,9 @@ public class AuthService {
     }
 
     public void logout(String token) {
+        if (token == null) {
+            throw new CustomException("Token cannot be null or empty");
+        }
         redisTokenService.deleteToken(token);
     }
 

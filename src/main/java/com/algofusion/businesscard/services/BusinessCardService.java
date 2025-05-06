@@ -30,7 +30,6 @@ public class BusinessCardService {
     private final BusinessCardMapper businessCardMapper;
     private final ObjectMapper objectMapper;
     private final ContactService contactService;
-    private final PermissionHelper permissionHelper;
 
     @Cacheable(value = "businessCards", key = "#username")
     public List<BusinessCardResponse> fetchAllBusinesCardsByUsername(String username) {
@@ -58,7 +57,7 @@ public class BusinessCardService {
             BusinessCardRequest businessCardRequest) {
         BusinessCard byId = fetchBusinessCardById(businessCardId);
 
-        permissionHelper.checkUsername(byId.getUser().getUsername(), username);
+        PermissionHelper.checkUsername(byId.getUser().getUsername(), username);
         try {
             objectMapper.updateValue(byId, businessCardRequest);
             contactService.updateContacts(byId, businessCardRequest.getContactsRequests());
@@ -74,7 +73,7 @@ public class BusinessCardService {
     public String deleteBusinessCardById(String username, Long id) {
         BusinessCard byId = fetchBusinessCardById(id);
 
-        permissionHelper.checkUsername(byId.getUser().getUsername(), username);
+        PermissionHelper.checkUsername(byId.getUser().getUsername(), username);
         businessCardRepository.delete(byId);
         return "Business Card deleted " + id;
     }
