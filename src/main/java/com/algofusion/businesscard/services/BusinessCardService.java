@@ -39,6 +39,14 @@ public class BusinessCardService {
                 .toList();
     }
 
+    public BusinessCardResponse fetchBusinessCardById(String username, Long id){
+        BusinessCard byId = fetchBusinessCardById(id);
+
+        PermissionHelper.checkUsername(byId.getUser().getUsername(), username);
+
+        return businessCardMapper.toBusinessCardResponse(byId);
+    }
+
     @CacheEvict(value = "businessCards", key = "#username")
     public BusinessCardResponse saveNewBusinessCardByUsername(String username,
             BusinessCardRequest businessCardRequest) {

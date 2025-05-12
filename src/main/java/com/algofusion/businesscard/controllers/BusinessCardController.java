@@ -40,6 +40,13 @@ public class BusinessCardController {
         return ResponseEntity.ok(businessCardService.fetchAllBusinesCardsByUsername(username));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<BusinessCardResponse> fetchBusinesCardById(@PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        return ResponseEntity.ok(businessCardService.fetchBusinessCardById(username, id));
+    }
+
     @PostMapping
     public ResponseEntity<BusinessCardResponse> saveNewBusinessCardByUsername(
             @Valid @RequestBody BusinessCardRequest businessCardRequest,

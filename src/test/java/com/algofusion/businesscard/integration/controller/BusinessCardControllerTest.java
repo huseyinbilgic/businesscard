@@ -95,7 +95,7 @@ public class BusinessCardControllerTest {
                                 .password(passwordEncoder.encode("user1234"))
                                 .role(Role.CUSTOMER)
                                 .refreshToken(jwtUtil.generateRefreshToken())
-                                .refreshTokenExpiresAt(Instant.now().plus(7,ChronoUnit.DAYS))
+                                .refreshTokenExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
                                 .build();
 
                 userRepository.save(user1);
