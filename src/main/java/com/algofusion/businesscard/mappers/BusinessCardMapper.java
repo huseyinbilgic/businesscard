@@ -16,6 +16,8 @@ public interface BusinessCardMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "bcCode", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "businessCardPrivacies", ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "contactsRequests", target = "contacts")
     BusinessCard toBusinessCard(BusinessCardRequest businessCardRequest);
 }

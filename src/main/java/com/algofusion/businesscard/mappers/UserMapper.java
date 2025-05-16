@@ -3,6 +3,7 @@ package com.algofusion.businesscard.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.algofusion.businesscard.dto.PrivacyUser;
 import com.algofusion.businesscard.entities.User;
 import com.algofusion.businesscard.requests.RegisterUserRequest;
 import com.algofusion.businesscard.responses.RegisterUserResponse;
@@ -19,4 +20,6 @@ public interface UserMapper {
     User toUser(RegisterUserRequest registerUserRequest);
 
     RegisterUserResponse toUserResponse(User user);
+
+    PrivacyUser toPrivacyUser(User user);
 }

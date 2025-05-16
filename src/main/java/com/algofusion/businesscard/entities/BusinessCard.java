@@ -72,4 +72,8 @@ public class BusinessCard {
     @Builder.Default
     @OneToMany(mappedBy = "businessCard", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contact> contacts = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "businessCard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BusinessCardPrivacy> businessCardPrivacies = new ArrayList<>();
 }

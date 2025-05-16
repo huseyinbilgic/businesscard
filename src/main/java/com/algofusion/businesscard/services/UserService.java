@@ -2,11 +2,14 @@ package com.algofusion.businesscard.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.algofusion.businesscard.dto.PrivacyUser;
 import com.algofusion.businesscard.entities.User;
 import com.algofusion.businesscard.enums.Role;
 import com.algofusion.businesscard.errors.CustomException;
@@ -16,6 +19,7 @@ import com.algofusion.businesscard.requests.RegisterUserRequest;
 import com.algofusion.businesscard.requests.UserUpdateForRefreshTokenRequest;
 import com.algofusion.businesscard.responses.RegisterUserResponse;
 import com.algofusion.businesscard.services.security.JwtUtil;
+import com.algofusion.businesscard.specifications.UserSpecifications;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,5 +77,11 @@ public class UserService {
         }
 
         return userMapper.toUserResponse(byUsernameOrEmail);
+    }
+
+    public List<PrivacyUser> searchUsers(String keyword) {
+        Specification<User> spec = Specification.where(UserSpecifications.nameContains(keyword));
+        List<User> all = userRepository.findAll(spec);
+        return all.stream().map(u -> userMapper.toPrivacyUser(u)).toList();
     }
 }

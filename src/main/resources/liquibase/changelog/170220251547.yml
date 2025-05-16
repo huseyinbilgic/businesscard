@@ -182,6 +182,10 @@ databaseChangeLog:
             referencedColumnNames: id
             constraintName: fk_business_cards_business_card_privacy
             onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: business_card_privacy
+            columnNames: user_id, business_card_id
+            constraintName: uk_user_businesscard_combination
 
       tags:
         - v1.0
