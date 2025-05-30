@@ -80,7 +80,7 @@ public class UserService {
     }
 
     public List<PrivacyUser> searchUsers(String keyword) {
-        Specification<User> spec = Specification.where(UserSpecifications.nameContains(keyword));
+        Specification<User> spec = UserSpecifications.nameContains(keyword);
         List<User> all = userRepository.findAll(spec);
         return all.stream().map(u -> userMapper.toPrivacyUser(u)).toList();
     }

@@ -35,7 +35,7 @@ public class BusinessCardPrivacyController {
 
     @PostMapping("business-card/{id}")
     public ResponseEntity<String> updateBusinessCardPrivacy(@PathVariable Long id,
-            @RequestBody @NotNull(message = "Used Ids can not be null") Set<Long> userIds,
+            @RequestBody @NotNull(message = "User Ids can not be null") Set<Long> userIds,
             @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         return ResponseEntity.ok(businessCardPrivacyService.updateBusinessCardPrivacy(username, id, userIds));

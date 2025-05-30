@@ -41,6 +41,7 @@ public class BusinessCardPrivacyService {
                 .orElseThrow(() -> new CustomException("Business Card not found" + id));
 
         PermissionHelper.checkUsername(businessCard.getUser().getUsername(), username);
+        userIds.remove(businessCard.getId());
 
         List<BusinessCardPrivacy> toBeRemoved = businessCard.getBusinessCardPrivacies().stream()
                 .filter(p -> !userIds.contains(p.getUser().getId()))
@@ -65,7 +66,6 @@ public class BusinessCardPrivacyService {
 
         businessCardPrivacyRepository.saveAll(newPrivacies);
 
-        return "Added users to Business Card";
+        return "Users have added to business card";
     }
-
 }
